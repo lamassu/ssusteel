@@ -39,14 +39,23 @@ void build_config(char *config) {
 }
 
 void update_lookup(char letter, int word) {
+  int last_rec_idx = 0;
+
   for (char i = 0; i < 4; i++) {
     char rec[2];
     memcpy(rec, lookup + word * 8 + 2*i, 2);
 
-    if (rec[0] == letter) {
+    if (rec[0] == '\0') {
+      last_rec_idx = i;
+      break;
+    } else if (rec[0] == letter) {
       *(lookup + word*8 + 2*i + 1) = rec[1] + 1;
+      return;
     }
   }
+
+  *(lookup + word*8 + 2*last_rec_idx + 0) = letter;
+  *(lookup + word*8 + 2*last_rec_idx + 1) = 1;
 }
 
 char lookup_letter(int word, char letter) {
@@ -64,16 +73,14 @@ char lookup_letter(int word, char letter) {
 
 void create_lookup(void) {
   for (int i = 0; i < words_len; i++) {
-    const char *word = words[i];
-    char *word_lookup;
-    int word_len = strlen(word);
+    char *word = words[i];
+    int raw_word_len = strlen(word);
+    int word_len = raw_word_len > 4 ? 4 : raw_word_len;
 
     for (int j = 0; j < word_len; j++) {
       char letter = word[j];
       update_lookup(letter, i);
     }
-
-    memcpy(lookup + i*8, word_lookup, 8);
   }
 }
 
@@ -104,27 +111,70 @@ int compute_config(char *rings) {
 
   for (int i = 0; i < 5; i++) {
     int ring_len = i == 4 ? 2 : 6;
-
-    if (ring_len == 2) {
-      printf("ring: %.2s\n", rings + i*6);
-    } else {
-      printf("ring: %.6s\n", rings + i*6);
-    }
-
     int ring_count = compute_ring(rings + i * 6, ring_len);
-    printf("ring_count [%d]: %d\n", i, ring_count);
     sum += ring_count;
   }
 
   return 12 * sum;
 }
 
-int main(void) {
-  char config[26];
-  create_lookup();
-  build_config(config);
-  printf("%.26s\n", config);
+void print_config(char *rings) {
+  for (int i = 0; i < 5; i++) {
+    int ring_len = i == 4 ? 2 : 6;
 
-  int sum = compute_config(config);
-  printf("%d", sum);
+    if (ring_len == 2) {
+      printf("%.2s\n", rings + i*6);
+    } else {
+      printf("%.6s\n", rings + i*6);
+    }
+  }
+}
+
+void print_lookup(void) {
+  for (int i = 0; i < words_len; i++) {
+    for (int j = 0; j < 8; j++) {
+      char c = *(lookup + i*8 + j);
+
+      if (j % 2 == 0) {
+        printf("%c", c == '\0' ? 'N' : c);
+      } else {
+        printf("%d", c);
+      }
+    }
+  }
+
+  printf("\n\n");
+}
+
+int is_sorted(char *config) {
+  return config[0] < config[5] &&
+    config[5] < config[10] &&
+    config[10] < config[15] &&
+    config[15] < config[20];
+}
+
+int main(int argc, char *argv[]) {
+  char *arg = argv[1];
+  printf("arg: %s\n", arg);
+  int seed = atoi(arg);
+  printf("seed: %d\n", seed);
+  srand(seed);
+  memset(lookup, '\0', words_len * 4 * 2);
+  create_lookup();
+
+  int min = 1000;
+
+  for (int i = 0; i < 100000000; i++) {
+    char config[26];
+    build_config(config);
+
+    int sum = compute_config(config);
+
+    if (sum < min) {
+      min = sum;
+      printf("[%d] sum: %d\n", i, sum);
+      print_config(config);
+      printf("\n");
+    }
+  }
 }
