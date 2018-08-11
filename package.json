@@ -1,0 +1,14 @@
+{
+  "name": "ssusteel",
+  "version": "1.0.0",
+  "description": "",
+  "main": "random-config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Josh Harvey <josh@lamassu.is> (https://lamassu.is/)",
+  "license": "ISC",
+  "dependencies": {
+    "lodash": "^4.17.10"
+  }
+}
