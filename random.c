@@ -7,6 +7,12 @@
 char *alphabet = "abcdefghijklmnopqrstuvwxyz";
 char lookup[2048 * 4 * 2];
 
+int ring_size(int idx) {
+  if (idx == 4) return 3;
+  if (idx == 3) return 4;
+  return 6;
+}
+
 int char_cmp(const void *a, const void *b) {
     const char *ia = (const char *)a;
     const char *ib = (const char *)b;
@@ -20,7 +26,7 @@ void build_config(char *config) {
   strcpy(ab, alphabet);
 
   for (int i = 0; i < 5; i++) {
-    int letter_count = i == 4 ? 2 : 6;
+    int letter_count = ring_size(i);
     char ring_letters[letter_count];
 
     for (int j = 0; j < letter_count; j++) {
@@ -110,8 +116,7 @@ int compute_config(char *rings) {
   int sum = 0;
 
   for (int i = 0; i < 5; i++) {
-    int ring_len = i == 4 ? 2 : 6;
-    int ring_count = compute_ring(rings + i * 6, ring_len);
+    int ring_count = compute_ring(rings + i * 6, ring_size(i));
     sum += ring_count;
   }
 
@@ -120,7 +125,7 @@ int compute_config(char *rings) {
 
 void print_config(char *rings) {
   for (int i = 0; i < 5; i++) {
-    int ring_len = i == 4 ? 2 : 6;
+    int ring_len = ring_size(i);
 
     if (ring_len == 2) {
       printf("%.2s\n", rings + i*6);

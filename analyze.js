@@ -63,6 +63,12 @@ createLookup()
 //   'jx'
 // ]
 
+// const _rings = `hnvxyz
+// bcdrtw
+// aeikou
+// fglmps
+// jq`
+
 const _rings = `hnvxyz
 bcdrtw
 aeikou
