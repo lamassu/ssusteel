@@ -1,2 +1,5 @@
 node_modules
 a.out
+*.log
+screenlog.*
+batch.sh

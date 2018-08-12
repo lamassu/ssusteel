@@ -5,7 +5,7 @@
 #include "wordlist.h"
 
 char *alphabet = "abcdefghijklmnopqrstuvwxyz";
-char lookup[1024 * 4 * 2];
+char lookup[2048 * 4 * 2];
 
 int char_cmp(const void *a, const void *b) {
     const char *ia = (const char *)a;

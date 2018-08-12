@@ -1,4 +1,4 @@
-const int words_len = 1024;
+const int words_len = 2048;
 
 char *words[] = {
  "abandon",
