@@ -5,7 +5,7 @@
 #include "wordlist.h"
 
 char *alphabet = "abcdefghijklmnopqrstuvwxyz";
-char lookup[words_len * 4 * 2];
+char lookup[1024 * 4 * 2];
 
 int char_cmp(const void *a, const void *b) {
     const char *ia = (const char *)a;
@@ -163,8 +163,9 @@ int main(int argc, char *argv[]) {
   create_lookup();
 
   int min = 1000;
+  int i = 0;
 
-  for (int i = 0; i < 100000000; i++) {
+  while (1) {
     char config[26];
     build_config(config);
 
@@ -172,9 +173,11 @@ int main(int argc, char *argv[]) {
 
     if (sum < min) {
       min = sum;
-      printf("[%d] sum: %d\n", i, sum);
+      printf("[%d][%d] sum: %d\n", seed, i, sum);
       print_config(config);
       printf("\n");
     }
+
+    i++;
   }
 }
